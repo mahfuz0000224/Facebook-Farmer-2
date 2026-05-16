@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ID Panel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root { --primary: #1877f2; --bg: #f0f2f5; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 5px; }
+        .header { background: var(--primary); color: white; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
+        
+        .paste-box { width: 100%; height: 50px; border: 1px solid var(--primary); border-radius: 5px; padding: 5px; box-sizing: border-box; margin-bottom: 5px; background: #fff; font-size: 12px; outline: none; }
+        
+        .container { background: white; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto; max-height: 60vh; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { background: #f0f2f5; padding: 4px; border: 1px solid #ddd; font-size: 10px; }
+        td { border: 1px solid #ddd; padding: 0; }
+        
+        input { width: 100%; border: none; padding: 6px 2px; outline: none; font-size: 11px; text-align: center; background: transparent; }
+        
+        .footer-btns { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .btn { border: none; border-radius: 5px; font-weight: bold; cursor: pointer; padding: 12px; font-size: 14px; }
+        .btn-add { background: #e4e6eb; color: #050505; }
+        .btn-submit { background: var(--primary); color: white; }
+        
+        #custom-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.7); 
+            backdrop-filter: blur(10px);    
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 10000; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .loader-content {
+            text-align: center;
+            color: #ffffff;
+            padding: 0 20px;
+        }
+
+        .neon-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 183, 255, 0.1);
+            border-top: 4px solid #00b7ff; 
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 15px #00b7ff, inset 0 0 10px #00b7ff; 
+            transition: all 0.3s ease;
+        }
+
+        .neon-spinner.success {
+            border: 4px solid #00ff88;
+            box-shadow: 0 0 20px #00ff88;
+            animation: pulse 0.5s ease-in-out forwards;
+        }
+
+        #loader-text {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.4;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="custom-overlay">
+    <div class="loader-content">
+        <div class="neon-spinner"></div>
+        <p id="loader-text">⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...</p>
+    </div>
+</div>
+
+<div class="header">ID SUBMISSION PANEL</div>
+
+<textarea class="paste-box" id="paster" placeholder="গুগল শিট থেকে কপি করে এখানে পেস্ট করুন..."></textarea>
+
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <th style="width:15%">SL</th>
+                <th>UID</th>
+                <th>Pass</th>
+                <th>Cookies</th>
+            </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+    </table>
+</div>
+
+<div class="footer-btns">
+    <button class="btn btn-add" onclick="increaseRows()">➕ Add 20 Rows</button>
+    <button class="btn btn-submit" onclick="sendToBot()">SUBMIT ALL IDs</button>
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const tbody = document.getElementById('rows');
+    let currentRowCount = 0;
+
+    function createRows(count) {
+        for(let i=0; i<count; i++) {
+            currentRowCount++;
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="text-align:center; background:#f9f9f9; font-size:9px; color:#888;">${currentRowCount}</td>
+                <td><input class="u"></td>
+                <td><input class="p"></td>
+                <td><input class="t"></td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    createRows(50); 
+
+    function increaseRows() {
+        createRows(20);
+    }
+
+    document.getElementById('paster').addEventListener('input', function(e) {
+        let text = e.target.value.trim();
+        if(!text) return;
+
+        let lines = text.split(/\r?\n/);
+        
+        if (lines.length > currentRowCount) {
+            createRows(lines.length - currentRowCount + 5);
+        }
+
+        let uInputs = document.querySelectorAll('.u');
+        let pInputs = document.querySelectorAll('.p');
+        let tInputs = document.querySelectorAll('.t');
+
+        lines.forEach((line, index) => {
+            let cols = line.split('\t'); 
+            if(uInputs[index]) uInputs[index].value = cols[0] || '';
+            if(pInputs[index]) pInputs[index].value = cols[1] || '';
+            if(tInputs[index]) tInputs[index].value = cols[2] || '';
+        });
+
+        setTimeout(() => { e.target.value = ""; }, 800);
+    });
+
+    function sendToBot() {
+        let us = document.querySelectorAll('.u');
+        let ps = document.querySelectorAll('.p');
+        let ts = document.querySelectorAll('.t');
+        let data = [];
+
+        for(let i=0; i<us.length; i++) {
+            if(us[i].value.trim() !== "") {
+                data.push({
+                    u: us[i].value.trim(), 
+                    p: ps[i].value.trim(), 
+                    t: ts[i].value.trim()
+                });
+            }
+        }
+
+        if(data.length < 10) { 
+            if (tg && tg.showAlert) {
+                tg.showAlert("❌ কমপক্ষে ১০ টি আইডি লাগবে! আপনি দিয়েছেন: " + data.length);
+            } else {
+                alert("❌ কমপক্ষে ১০ টি আইডি লাগবে! আপনি দিয়েছেন: " + data.length);
+            }
+            return; 
+        }
+
+        // গ্লাস-মরফিজম ব্লুর ওভারলে লোডিং অন করা হলো
+        document.getElementById('custom-overlay').style.display = "flex";
+        document.getElementById("loader-text").innerHTML = "⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...";
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            
+            // স্টেপ ১: ইউজারকে ঠিক ১০ সেকেন্ড (১০,০০০ মিলি-সেকেন্ড) লোডিং স্পিনার দেখানো হবে
+            setTimeout(function() {
+                var spinner = document.querySelector(".neon-spinner");
+                if(spinner) {
+                    spinner.classList.add("success"); // স্পিনারের কালার নিয়ন গ্রিন হবে
+                }
+                
+                // স্ক্রিনে আপনার কাঙ্ক্ষিত সাকসেস মেসেজটি সেট করা হলো
+                document.getElementById("loader-text").innerHTML = "✅ আপনার সব আইডি আলাদা আলাদাভাবে সাবমিট সম্পন্ন হয়েছে। অনুগ্রহ করে এডমিন রিভিউ পর্যন্ত অপেক্ষা করুন।";
+
+                // স্টেপ ২: সাকসেস মেসেজটি ঠিক ৩ সেকেন্ড (৩,০০০ মিলি-সেকেন্ড) স্ক্রিনে স্থির থাকবে
+                setTimeout(function() {
+                    
+                    // স্টেপ ৩: ১৩ সেকেন্ডের ভিজ্যুয়াল প্রসেস শেষ হওয়া মাত্রই অরিজিনাল উপায়ে ডাটা সাবমিট হবে এবং অ্যাপ ক্লোজ হবে
+                    window.Telegram.WebApp.sendData(JSON.stringify(data));
+                    window.Telegram.WebApp.close(); 
+                    
+                }, 3000);
+
+            }, 10000);
+
+        } else {
+            alert("Error: টেলিগ্রাম ওয়েবলজিক খুঁজে পাওয়া যায়নি। অ্যাপটি বটের ভেতর থেকে ওপেন করুন।");
+            document.getElementById('custom-overlay').style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>
