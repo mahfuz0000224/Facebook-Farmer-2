@@ -3,39 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cookies ID Panel</title>
+    <title>Cookies ID Panel | Premium Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --primary: #FF9800; --bg: #f0f2f5; --warning: #d32f2f; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 5px; }
-        .header { background: var(--primary); color: white; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
-        
-        .notice-box { 
-            background: #ffebee; 
-            border: 2px dashed var(--warning); 
-            color: var(--warning); 
-            padding: 10px; 
-            border-radius: 6px; 
-            text-align: center; 
-            margin-bottom: 8px; 
-            font-size: 12px; 
-            font-weight: bold;
-            line-height: 1.5;
+        :root { 
+            --primary: #FF2D55; /* Hot Pink */
+            --primary-dark: #D81B60;
+            --success: #00E676; /* Vivid Green */
+            --success-dark: #00C853;
+            --bg: #121212; /* Dark Deep Background */
+            --card-bg: #1E1E1E; /* Card Background */
+            --text: #FFFFFF;
+            --text-muted: #B0B0B0;
+            --border: #333333;
+            --warning-bg: #420A16; /* Deep Pinkish Red for warning */
+            --warning-text: #FFCDD2;
         }
 
-        .paste-box { width: 100%; height: 50px; border: 1px solid var(--primary); border-radius: 5px; padding: 5px; box-sizing: border-box; margin-bottom: 5px; background: #fff; font-size: 12px; outline: none; }
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            margin: 0; 
+            padding: 8px; 
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white; 
+            padding: 12px; 
+            border-radius: 8px; 
+            text-align: center; 
+            margin-bottom: 8px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
         
-        .container { background: white; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto; max-height: 55vh; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: #f0f2f5; padding: 4px; border: 1px solid #ddd; font-size: 10px; }
-        td { border: 1px solid #ddd; padding: 0; }
+        .notice-box { 
+            background: var(--warning-bg); 
+            border: 1px dashed #FF5252; 
+            color: var(--warning-text); 
+            padding: 12px; 
+            border-radius: 8px; 
+            text-align: center; 
+            margin-bottom: 10px; 
+            font-size: 12px; 
+            font-weight: 500;
+            line-height: 1.6;
+            box-shadow: inset 0 0 10px rgba(255,0,0,0.1);
+        }
+
+        .paste-box { 
+            width: 100%; 
+            height: 55px; 
+            border: 2px solid var(--border); 
+            border-radius: 8px; 
+            padding: 8px; 
+            box-sizing: border-box; 
+            margin-bottom: 10px; 
+            background: var(--card-bg); 
+            color: var(--text);
+            font-size: 13px; 
+            outline: none; 
+            transition: border-color 0.3s;
+        }
+        .paste-box:focus { border-color: var(--primary); }
         
-        input { width: 100%; border: none; padding: 6px 2px; outline: none; font-size: 11px; text-align: center; background: transparent; }
+        .container { 
+            background: var(--card-bg); 
+            border-radius: 8px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
+            overflow: auto; 
+            max-height: 52vh; 
+            border: 1px solid var(--border);
+        }
         
-        .footer-btns { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
-        .btn { border: none; border-radius: 5px; font-weight: bold; cursor: pointer; padding: 12px; font-size: 14px; }
-        .btn-add { background: #e4e6eb; color: #050505; }
-        .btn-submit { background: var(--primary); color: white; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 320px;}
+        th { 
+            background: #252525; 
+            padding: 8px; 
+            border: 1px solid var(--border); 
+            font-size: 11px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        td { border: 1px solid var(--border); padding: 0; position: relative; }
+        
+        input { 
+            width: 100%; 
+            border: none; 
+            padding: 10px 5px; 
+            box-sizing: border-box; 
+            outline: none; 
+            font-size: 12px; 
+            text-align: center; 
+            background: transparent; 
+            color: var(--text);
+            transition: background 0.3s;
+        }
+        input:focus { background: rgba(255, 45, 85, 0.05); }
+
+        .footer-btns { 
+            margin-top: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            padding-bottom: 10px;
+        }
+        .btn { 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            padding: 14px; 
+            font-size: 15px; 
+            letter-spacing: 0.5px;
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .btn:active { transform: translateY(1px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        
+        .btn-add { 
+            background: #333333; 
+            color: var(--text); 
+        }
+        .btn-add:hover { background: #444444; }
+        
+        .btn-submit { 
+            background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%);
+            color: #000; /* Black text on green for contrast */
+        }
+        .btn-submit:hover { box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
         
         #custom-overlay { 
             display: none; 
@@ -44,25 +147,41 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: rgba(0, 0, 0, 0.7); 
-            backdrop-filter: blur(10px);    
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.9); 
+            backdrop-filter: blur(15px);    
+            -webkit-backdrop-filter: blur(15px);
             z-index: 10000; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
         }
 
-        .loader-content { text-align: center; color: #ffffff; padding: 0 20px; }
+        .loader-content { text-align: center; color: #ffffff; padding: 0 25px; }
         .neon-spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(255, 152, 0, 0.1); border-top: 4px solid #FF9800; 
-            border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; box-shadow: 0 0 15px #FF9800, inset 0 0 10px #FF9800; 
+            width: 60px; height: 60px; 
+            border: 4px solid rgba(255, 45, 85, 0.1); 
+            border-top: 4px solid var(--primary); 
+            border-radius: 50%; 
+            margin: 0 auto 25px auto; 
+            animation: spin 1s linear infinite; 
+            box-shadow: 0 0 20px rgba(255, 45, 85, 0.5), inset 0 0 15px rgba(255, 45, 85, 0.3); 
         }
-        .neon-spinner.success { border: 4px solid #00ff88; box-shadow: 0 0 20px #00ff88; animation: pulse 0.5s ease-in-out forwards; }
-        #loader-text { font-size: 14px; font-weight: bold; margin: 0; }
+        .neon-spinner.success { 
+            border: 4px solid var(--success); 
+            box-shadow: 0 0 25px rgba(0, 230, 118, 0.6); 
+            animation: pulse 0.5s ease-in-out forwards; 
+        }
+        #loader-text { font-size: 15px; font-weight: 500; margin: 0; line-height: 1.5; color: var(--text-muted); }
+        #loader-text strong { color: var(--text); }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+    
+        /* Scrollbar styling for a cleaner look */
+        .container::-webkit-scrollbar { width: 6px; height: 6px; }
+        .container::-webkit-scrollbar-track { background: var(--card-bg); }
+        .container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+        .container::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
 </head>
 <body>
@@ -70,7 +189,7 @@
 <div id="custom-overlay">
     <div class="loader-content">
         <div class="neon-spinner"></div>
-        <p id="loader-text">⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...</p>
+        <p id="loader-text">⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...<br>অনুগ্রহ করে ১০ সেকেন্ড অপেক্ষা করুন।</p>
     </div>
 </div>
 
@@ -86,7 +205,7 @@
     <table>
         <thead>
             <tr>
-                <th style="width:15%">SL</th>
+                <th style="width:12%">SL</th>
                 <th>UID</th>
                 <th>Pass</th>
                 <th>Cookies</th>
@@ -105,27 +224,38 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
+    // Set theme parameters based on Telegram's theme if available, otherwise use defaults
+    if(tg.themeParams && tg.themeParams.bg_color) {
+        document.documentElement.style.setProperty('--bg', tg.themeParams.bg_color);
+        document.documentElement.style.setProperty('--text', tg.themeParams.text_color);
+        // Add more theme parameter mapping if desired
+    }
+
     const tbody = document.getElementById('rows');
     let currentRowCount = 0;
 
     function createRows(count) {
+        let fragment = document.createDocumentFragment();
         for(let i=0; i<count; i++) {
             currentRowCount++;
             let tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="text-align:center; background:#f9f9f9; font-size:9px; color:#888;">${currentRowCount}</td>
-                <td><input class="u"></td>
-                <td><input class="p"></td>
-                <td><input class="t" placeholder="Cookies দিন"></td>
+                <td style="text-align:center; background:#252525; font-size:10px; color:var(--text-muted); font-weight:500;">${currentRowCount}</td>
+                <td><input class="u" placeholder="UID"></td>
+                <td><input class="p" placeholder="Pass"></td>
+                <td><input class="t" placeholder="Cookies data"></td>
             `;
-            tbody.appendChild(tr);
+            fragment.appendChild(tr);
         }
+        tbody.appendChild(fragment);
     }
 
+    // শুরুতে ৫০টি রো তৈরি হবে
     createRows(50); 
 
     function increaseRows() { createRows(20); }
 
+    // শিট থেকে পেস্ট হ্যান্ডলার
     document.getElementById('paster').addEventListener('input', function(e) {
         let text = e.target.value.trim();
         if(!text) return;
@@ -146,6 +276,7 @@
         setTimeout(() => { e.target.value = ""; }, 800);
     });
 
+    // বটের কাছে ডাটা পাঠানোর ফাংশন
     function sendToBot() {
         let us = document.querySelectorAll('.u');
         let ps = document.querySelectorAll('.p');
@@ -153,10 +284,11 @@
         let data = [];
 
         for(let i=0; i<us.length; i++) {
-            if(us[i].value.trim() !== "") {
+            let uid = us[i].value.trim();
+            if(uid !== "") {
                 // 🎯 কুকিজ ডেটা অবজেক্ট ফরম্যাট এবং টাইপ সেট করা হলো
                 data.push({
-                    u: us[i].value.trim(), 
+                    u: uid, 
                     p: ps[i].value.trim(), 
                     c: ts[i].value.trim(),
                     type: "cookies"
@@ -164,20 +296,23 @@
             }
         }
 
+        // কমপক্ষে ১০টি আইডি চেক
         if(data.length < 10) { 
-            if (tg && tg.showAlert) { tg.showAlert("❌ কমপক্ষে ১০ টি আইডি লাগবে! আপনি দিয়েছেন: " + data.length); } 
-            else { alert("❌ কমপক্ষে ১০ টি আইডি লাগবে! আপনি দিয়েছেন: " + data.length); }
+            let msg = "❌ কমপক্ষে ১০ টি কুকিজ আইডি লাগবে!\nআপনি দিয়েছেন: " + data.length + " টি।";
+            if (tg && tg.showAlert) { tg.showAlert(msg); } 
+            else { alert(msg); }
             return; 
         }
 
+        // লোডার স্ক্রিন অন হবে
         document.getElementById('custom-overlay').style.display = "flex";
 
         if (window.Telegram && window.Telegram.WebApp) {
-            // হুবহু ২এফএ-এর মতো ১০ সেকেন্ড প্রসেসিং লোডার
+            // ২এফএ-এর মতো ১০ সেকেন্ড প্রসেসিং লোডার
             setTimeout(function() {
                 var spinner = document.querySelector(".neon-spinner");
                 if(spinner) spinner.classList.add("success");
-                document.getElementById("loader-text").innerHTML = "✅ আপনার সব আইডি সাবমিট সম্পন্ন হয়েছে। অনুগ্রহ করে এডমিন রিভিউ পর্যন্ত অপেক্ষা করুন।";
+                document.getElementById("loader-text").innerHTML = "✅ <strong>আপনার সব কুকিজ সাবমিট সম্পন্ন হয়েছে।</strong><br>অনুগ্রহ করে এডমিন রিভিউ পর্যন্ত অপেক্ষা করুন।";
                 
                 // ৩ সেকেন্ড সাকসেস মেসেজ দেখানোর পর ডাটা পুশ ও অটো এক্সিট
                 setTimeout(function() {
@@ -185,6 +320,12 @@
                     window.Telegram.WebApp.close(); 
                 }, 3000);
             }, 10000);
+        } else {
+            // For testing outside Telegram
+            setTimeout(function() {
+                alert("Data sent (simulation): " + data.length + " IDs");
+                document.getElementById('custom-overlay').style.display = "none";
+            }, 2000);
         }
     }
 </script>
