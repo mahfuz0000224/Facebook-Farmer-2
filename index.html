@@ -6,11 +6,10 @@
     <title>Cookies ID Panel</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --primary: #e91e63; --bg: #f0f2f5; --warning: #d32f2f; } 
+        :root { --primary: #FF9800; --bg: #f0f2f5; --warning: #d32f2f; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 5px; }
         .header { background: var(--primary); color: white; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
         
-        /* 🔥 লাল কালারের কাস্টম নোটিশ বক্সের ডিজাইন */
         .notice-box { 
             background: #ffebee; 
             border: 2px dashed var(--warning); 
@@ -22,7 +21,6 @@
             font-size: 12px; 
             font-weight: bold;
             line-height: 1.5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .paste-box { width: 100%; height: 50px; border: 1px solid var(--primary); border-radius: 5px; padding: 5px; box-sizing: border-box; margin-bottom: 5px; background: #fff; font-size: 12px; outline: none; }
@@ -57,11 +55,11 @@
 
         .loader-content { text-align: center; color: #ffffff; padding: 0 20px; }
         .neon-spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(233, 30, 99, 0.1); border-top: 4px solid #e91e63; 
-            border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; box-shadow: 0 0 15px #e91e63, inset 0 0 10px #e91e63; 
+            width: 50px; height: 50px; border: 4px solid rgba(255, 152, 0, 0.1); border-top: 4px solid #FF9800; 
+            border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; box-shadow: 0 0 15px #FF9800, inset 0 0 10px #FF9800; 
         }
         .neon-spinner.success { border: 4px solid #00ff88; box-shadow: 0 0 20px #00ff88; animation: pulse 0.5s ease-in-out forwards; }
-        #loader-text { font-size: 14px; font-weight: bold; margin: 0; line-height: 1.4; text-shadow: 0 0 8px rgba(255, 255, 255, 0.4); }
+        #loader-text { font-size: 14px; font-weight: bold; margin: 0; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -79,7 +77,7 @@
 <div class="header">COOKIES ID SUBMISSION PANEL</div>
 
 <div class="notice-box">
-    ⚠️ কড়া সতর্কবার্তা: ভুল বা ডুপ্লিকেট আইডি সাবমিট দিলে আপনার সম্পূর্ণ পেমেন্ট আজীবনের জন্য ক্যান্সেল বা ব্লক করা হবে!
+    ⚠️ কড়া সতর্কবার্তা: ভুল বা ডুপ্লিকেট কুকিজ সাবমিট দিলে আপনার সম্পূর্ণ পেমেন্ট আজীবনের জন্য ক্যান্সেল বা ব্লক করা হবে!
 </div>
 
 <textarea class="paste-box" id="paster" placeholder="গুগল শিট থেকে কপি করে এখানে পেস্ট করুন..."></textarea>
@@ -91,7 +89,7 @@
                 <th style="width:15%">SL</th>
                 <th>UID</th>
                 <th>Pass</th>
-                <th>Cookies Link</th>
+                <th>Cookies</th>
             </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -100,7 +98,7 @@
 
 <div class="footer-btns">
     <button class="btn btn-add" onclick="increaseRows()">➕ Add 20 Rows</button>
-    <button class="btn btn-submit" onclick="sendToBot()">SUBMIT ALL IDs</button>
+    <button class="btn btn-submit" onclick="sendToBot()">SUBMIT ALL COOKIES</button>
 </div>
 
 <script>
@@ -118,7 +116,7 @@
                 <td style="text-align:center; background:#f9f9f9; font-size:9px; color:#888;">${currentRowCount}</td>
                 <td><input class="u"></td>
                 <td><input class="p"></td>
-                <td><input class="c"></td>
+                <td><input class="t" placeholder="Cookies দিন"></td>
             `;
             tbody.appendChild(tr);
         }
@@ -137,13 +135,13 @@
 
         let uInputs = document.querySelectorAll('.u');
         let pInputs = document.querySelectorAll('.p');
-        let cInputs = document.querySelectorAll('.c');
+        let tInputs = document.querySelectorAll('.t');
 
         lines.forEach((line, index) => {
             let cols = line.split('\t'); 
             if(uInputs[index]) uInputs[index].value = cols[0] || '';
             if(pInputs[index]) pInputs[index].value = cols[1] || '';
-            if(cInputs[index]) cInputs[index].value = cols[2] || '';
+            if(tInputs[index]) tInputs[index].value = cols[2] || '';
         });
         setTimeout(() => { e.target.value = ""; }, 800);
     });
@@ -151,16 +149,17 @@
     function sendToBot() {
         let us = document.querySelectorAll('.u');
         let ps = document.querySelectorAll('.p');
-        let cs = document.querySelectorAll('.c');
+        let ts = document.querySelectorAll('.t');
         let data = [];
 
         for(let i=0; i<us.length; i++) {
             if(us[i].value.trim() !== "") {
+                // 🎯 কুকিজ ডেটা অবজেক্ট ফরম্যাট এবং টাইপ সেট করা হলো
                 data.push({
-                    type: "cookies", 
                     u: us[i].value.trim(), 
                     p: ps[i].value.trim(), 
-                    c: cs[i].value.trim()
+                    c: ts[i].value.trim(),
+                    type: "cookies"
                 });
             }
         }
@@ -172,21 +171,20 @@
         }
 
         document.getElementById('custom-overlay').style.display = "flex";
-        document.getElementById("loader-text").innerHTML = "⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...";
 
         if (window.Telegram && window.Telegram.WebApp) {
+            // হুবহু ২এফএ-এর মতো ১০ সেকেন্ড প্রসেসিং লোডার
             setTimeout(function() {
                 var spinner = document.querySelector(".neon-spinner");
-                if(spinner) { spinner.classList.add("success"); }
-                document.getElementById("loader-text").innerHTML = "✅ আপনার সব আইডি আলাদা আলাদাভাবে সাবমিট সম্পন্ন হয়েছে। অনুগ্রহ করে এডমিন রিভিউ পর্যন্ত অপেক্ষা করুন।";
+                if(spinner) spinner.classList.add("success");
+                document.getElementById("loader-text").innerHTML = "✅ আপনার সব আইডি সাবমিট সম্পন্ন হয়েছে। অনুগ্রহ করে এডমিন রিভিউ পর্যন্ত অপেক্ষা করুন।";
+                
+                // ৩ সেকেন্ড সাকসেস মেসেজ দেখানোর পর ডাটা পুশ ও অটো এক্সিট
                 setTimeout(function() {
                     window.Telegram.WebApp.sendData(JSON.stringify(data));
                     window.Telegram.WebApp.close(); 
                 }, 3000);
             }, 10000);
-        } else {
-            alert("Error: টেলিগ্রাম ওয়েবলজিক খুঁজে পাওয়া যায়নি।");
-            document.getElementById('custom-overlay').style.display = "none";
         }
     }
 </script>
