@@ -3,35 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cookies ID Panel | Strict White</title>
+    <title>ID Panel</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ওস্তাদ, এখানে কালারগুলো একদম লক করে দেওয়া হলো যেন টেলিগ্রাম থিম একে চেঞ্জ না করতে পারে */
-        body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            background: #ffffff !important; /* ফোর্স হোয়াইট */
-            color: #000000 !important; /* ফোর্স ব্ল্যাক টেক্সট */
-            margin: 0; 
-            padding: 5px; 
-            box-sizing: border-box;
+        /* ওস্তাদ, এখানে কালার প্যালেট পিংক ও গ্রিন করে হোয়াইট ব্যাকগ্রাউন্ড ফিক্স করা হলো */
+        :root { 
+            --primary: #FF2D55; /* Premium Hot Pink */
+            --bg: #ffffff; /* হোয়াইট ব্যাকগ্রাউন্ড */
+            --warning: #d32f2f; 
         }
-
-        .header { 
-            background: linear-gradient(135deg, #FF2D55 0%, #D81B60 100%) !important;
-            color: #ffffff !important; 
-            padding: 10px; 
-            border-radius: 6px; 
-            text-align: center; 
-            margin-bottom: 5px; 
-            font-size: 15px; 
-            font-weight: bold; 
-            letter-spacing: 0.5px;
-        }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 5px; }
+        .header { background: var(--primary); color: white; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
         
         .notice-box { 
-            background: #ffebee !important; 
-            border: 1px dashed #d32f2f !important; 
-            color: #d32f2f !important; 
+            background: #ffebee; 
+            border: 2px dashed var(--warning); 
+            color: var(--warning); 
             padding: 10px; 
             border-radius: 6px; 
             text-align: center; 
@@ -41,76 +28,19 @@
             line-height: 1.5;
         }
 
-        .paste-box { 
-            width: 100%; 
-            height: 50px; 
-            border: 1px solid #FF2D55 !important; 
-            border-radius: 5px; 
-            padding: 6px; 
-            box-sizing: border-box; 
-            margin-bottom: 5px; 
-            background: #ffffff !important; 
-            color: #000000 !important; 
-            font-size: 12px; 
-            outline: none; 
-        }
+        .paste-box { width: 100%; height: 50px; border: 1px solid var(--primary); border-radius: 5px; padding: 5px; box-sizing: border-box; margin-bottom: 5px; background: #fff; font-size: 12px; outline: none; }
         
-        .container { 
-            background: #ffffff !important; 
-            border-radius: 5px; 
-            overflow: auto; 
-            max-height: 55vh; 
-            border: 1px solid #cccccc !important;
-        }
+        .container { background: white; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto; max-height: 55vh; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { background: #f0f2f5; padding: 4px; border: 1px solid #ddd; font-size: 10px; }
+        td { border: 1px solid #ddd; padding: 0; }
         
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; background: #ffffff !important;}
-        th { 
-            background: #e4e6eb !important; 
-            padding: 6px; 
-            border: 1px solid #cccccc !important; 
-            font-size: 11px; 
-            color: #000000 !important;
-            font-weight: bold;
-        }
-        td { border: 1px solid #cccccc !important; padding: 0; background: #ffffff !important; }
+        input { width: 100%; border: none; padding: 6px 2px; outline: none; font-size: 11px; text-align: center; background: transparent; color: #000000; }
         
-        input { 
-            width: 100%; 
-            border: none !important; 
-            padding: 8px 2px; 
-            box-sizing: border-box; 
-            outline: none; 
-            font-size: 11px; 
-            text-align: center; 
-            background: #ffffff !important; 
-            color: #000000 !important; /* লেখা কুচকুচে কালো হবে */
-        }
-        input:focus { background: rgba(255, 45, 85, 0.05) !important; }
-
-        .footer-btns { 
-            margin-top: 10px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 5px; 
-        }
-        .btn { 
-            border: none; 
-            border-radius: 5px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            padding: 12px; 
-            font-size: 14px; 
-        }
-        
-        .btn-add { 
-            background: #e4e6eb !important; 
-            color: #050505 !important; 
-        }
-        
-        .btn-submit { 
-            background: #00C853 !important; /* ফ্রেশ গ্রিন বাটন */
-            color: #ffffff !important; 
-        }
+        .footer-btns { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .btn { border: none; border-radius: 5px; font-weight: bold; cursor: pointer; padding: 12px; font-size: 14px; }
+        .btn-add { background: #e4e6eb; color: #050505; }
+        .btn-submit { background: #00C853; color: white; } /* গ্রিন সাবমিট বাটন */
         
         #custom-overlay { 
             display: none; 
@@ -119,27 +49,20 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: rgba(255, 255, 255, 0.98) !important; /* লোডার স্ক্রিনও ধবধবে সাদা */
+            background: rgba(255, 255, 255, 0.95); /* হোয়াইট ওভারলে */
             z-index: 10000; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
         }
 
-        .loader-content { text-align: center; color: #333333 !important; padding: 0 20px; }
+        .loader-content { text-align: center; color: #333333; padding: 0 20px; }
         .neon-spinner {
-            width: 50px; height: 50px; 
-            border: 4px solid rgba(255, 45, 85, 0.1) !important; 
-            border-top: 4px solid #FF2D55 !important; 
-            border-radius: 50%; 
-            margin: 0 auto 20px auto; 
-            animation: spin 1s linear infinite; 
+            width: 50px; height: 50px; border: 4px solid rgba(255, 45, 85, 0.1); border-top: 4px solid var(--primary); 
+            border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; box-shadow: 0 0 15px rgba(255, 45, 85, 0.3); 
         }
-        .neon-spinner.success { 
-            border: 4px solid #00C853 !important; 
-            animation: pulse 0.5s ease-in-out forwards; 
-        }
-        #loader-text { font-size: 14px; font-weight: bold; margin: 0; color: #333333 !important; }
+        .neon-spinner.success { border: 4px solid #00C853; box-shadow: 0 0 20px rgba(0, 200, 83, 0.4); animation: pulse 0.5s ease-in-out forwards; }
+        #loader-text { font-size: 14px; font-weight: bold; margin: 0; color: #333333; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -150,7 +73,7 @@
 <div id="custom-overlay">
     <div class="loader-content">
         <div class="neon-spinner"></div>
-        <p id="loader-text">⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...<br>অনুগ্রহ করে ১০ সেকেন্ড অপেক্ষা করুন।</p>
+        <p id="loader-text">⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...</p>
     </div>
 </div>
 
@@ -189,19 +112,17 @@
     let currentRowCount = 0;
 
     function createRows(count) {
-        let fragment = document.createDocumentFragment();
         for(let i=0; i<count; i++) {
             currentRowCount++;
             let tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="text-align:center; background:#f9f9f9 !important; font-size:9px; color:#666 !important; font-weight:bold;">${currentRowCount}</td>
+                <td style="text-align:center; background:#f9f9f9; font-size:9px; color:#888;">${currentRowCount}</td>
                 <td><input class="u"></td>
                 <td><input class="p"></td>
                 <td><input class="t" placeholder="Cookies দিন"></td>
             `;
-            fragment.appendChild(tr);
+            tbody.appendChild(tr);
         }
-        tbody.appendChild(fragment);
     }
 
     createRows(50); 
@@ -236,6 +157,7 @@
 
         for(let i=0; i<us.length; i++) {
             if(us[i].value.trim() !== "") {
+                // ২এফএ কোডের ডাটা মেকানিজম হুবহু সেম, শুধু টাইপ 'cookies' আর কি 'c' করা হলো
                 data.push({
                     u: us[i].value.trim(), 
                     p: ps[i].value.trim(), 
@@ -254,6 +176,7 @@
         document.getElementById('custom-overlay').style.display = "flex";
 
         if (window.Telegram && window.Telegram.WebApp) {
+            // হুবহু ২এফএ-এর ১০ সেকেন্ড + ৩ সেকেন্ডের টাইমিং মেথড
             setTimeout(function() {
                 var spinner = document.querySelector(".neon-spinner");
                 if(spinner) spinner.classList.add("success");
